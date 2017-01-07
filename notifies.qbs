@@ -8,6 +8,8 @@ CppApplication {
 		submodules: ["core", "network"]
 	}
 
+	cpp.cxxLanguageVersion : "c++14"
+
 	files: [
 		"main.cpp"
 	]

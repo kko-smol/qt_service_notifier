@@ -12,7 +12,7 @@ int main(int argc,char* argv[]){
 
     QCoreApplication app(argc,argv);
 
-    QFile config("config.json");
+    QFile config(app.applicationDirPath()+"/config.json");
     config.open(QIODevice::ReadOnly);
 
     QByteArray configs = config.readAll();
