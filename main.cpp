@@ -23,7 +23,7 @@ int main(int argc,char* argv[]){
         QList<QString> ips;
         uint port = 6666;
         uint period = 5000;
-        QByteArray message("empty");
+        QList<QByteArray> message;
 
         if (doc.object().contains("address")){
             auto addrV = doc.object().value("address").toArray().toVariantList();
@@ -49,9 +49,11 @@ int main(int argc,char* argv[]){
             }
         }
         if (doc.object().contains("message")){
-            QString msg = doc.object().value("message").toString();
+            QJsonArray msg = doc.object().value("message").toArray();
             if (!msg.isEmpty()){
-                message = msg.toLatin1();
+                for (int i=0; i<msg.size();i++){
+                    message.append(msg.at(i).toString().toLatin1());
+                }
             }
         }
 
@@ -59,8 +61,10 @@ int main(int argc,char* argv[]){
         QUdpSocket socket;
         QObject::connect(&tmr,&QTimer::timeout,[&](){
             foreach (auto dst, ips) {
-                socket.writeDatagram(message,QHostAddress(dst),port);
-                qDebug() << "send";
+                foreach (QByteArray m, message){
+                    socket.writeDatagram(m,QHostAddress(dst),port);
+                    qDebug() << "send";
+                }
             }
         });
 
